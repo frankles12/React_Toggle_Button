@@ -1,0 +1,155 @@
+<body>
+<link href="https://fonts.googleapis.com/css?family=Antic+Slab" rel="stylesheet">
+<style>
+    *,
+    *:before,
+    *:after {
+        /* Sets padding to be included in the width and height. This is epic man!
+         `inherit` inherits the parents styling
+         I believe this is entire string is setting `*` (all) elements to always inherit `box-sizing`
+         */
+        box-sizing: inherit;
+    }
+    body {
+        font-family: 'Antic Slab', serif;
+    }
+    hr {
+        width: 100%;
+    }
+
+    /*
+    toggle styles copied and modified from
+    https://codepen.io/mallendeo/pen/eLIiG
+    by Mauricio Allende (https://mallendeo.com/)
+     */
+    .toggle-btn {
+        display: inline-block;
+        outline: 0;
+        width: 4em;
+        height: 2em;
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+        background: #fbfbfb;
+        border-radius: 2em;
+        padding: 2px;
+        transition: all 0.4s ease;
+        border: 1px solid #e8eae9;
+    }
+    .toggle-btn:focus::after,
+    .toggle-btn:active::after {
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1),
+        0 4px 0 rgba(0, 0, 0, 0.08),
+        inset 0px 0px 0px 1.5px #9c9c9c;
+    }
+    .toggle-btn::after {
+        left: 0;
+        position: relative;
+        display: block;
+        content: '';
+        width: 50%;
+        height: 100%;
+        border-radius: 2em;
+        background: #fbfbfb;
+        transition: all 0.3s
+        cubic-bezier(0.175, 0.885, 0.32, 1.275),
+        padding 0.3s ease, margin 0.3s ease;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1),
+        0 4px 0 rgba(0, 0, 0, 0.08);
+    }
+    .toggle-btn.toggle-btn-on::after {
+        left: 50%;
+    }
+    .toggle-btn.toggle-btn-on {
+        background: #86d993;
+    }
+    .toggle-btn.toggle-btn-on:active {
+        box-shadow: none;
+    }
+    .toggle-btn.toggle-btn-on:active::after {
+        margin-left: -0.8em;
+    }
+    .toggle-btn:active::after {
+        padding-right: 0.8em;
+    }
+    .toggle-input {
+        display: none;
+    }
+</style>
+<script src="https://unpkg.com/react@16.0.0/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@16.0.0/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
+
+<div id="⚛️"></div>
+
+<script type="text/babel">
+    class Toggle extends React.Component {
+        // Empty function that does nothing. It's here so there is a variable to refer to. Without it the application would crash.
+        static defaultProps = {onToggle: () => {}}
+        //Sets the state with object `on` and a property of `false`
+        //tweet l8er
+        state = {on: false}
+        toggle = () =>
+            this.setState(
+                // sets the State to true. Object `on` is given an invalid property causing the boolean to change.
+                ({on}) => ({on: !on}),
+                // Second parameter runs a function with the `on` object's new property of true.
+                () => {
+                    // Sets the state to the the newly modified `on` object.
+                    // Calls a function that doesn't exist. So we need to create the static defaultProps or else the app will crash.
+                    this.props.onToggle(this.state.on)
+                },
+            )
+        render() {
+            const {on} = this.state
+            // Renders the toggle button.
+            return (
+                    <Switch on={on} onClick={this.toggle} />
+            )
+        }
+    }
+    function App() {
+        // renders the console message of the current toggle status. (true || false)
+        return (
+                <Toggle
+                        onToggle={on => console.log('toggle', on)}
+                />
+        )
+    }
+
+
+
+    function Switch({on, className = '', ...props}) {
+        return (
+                <div className="toggle">
+                    <input
+                            className="toggle-input"
+                            type="checkbox"
+                    />
+                    <button
+                            className={`${className} toggle-btn ${on
+                                ? 'toggle-btn-on'
+                                : 'toggle-btn-off'}`}
+                            aria-expanded={on}
+                            {...props}
+                    />
+                </div>
+        )
+    }
+
+    ReactDOM.render(
+            <div
+                    style={{
+                        marginTop: 40,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        flexDirection: 'column',
+                        textAlign: 'center',
+                    }}
+            >
+                <App />
+            </div>,
+        document.getElementById('⚛️'),
+    )
+</script>
+</body>
